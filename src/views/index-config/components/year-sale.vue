@@ -597,7 +597,7 @@ export default {
       } else {
         postObj.push({
           ep_sqlsettingid: "",
-          ep_attr2: replaceSQLString(this.sqlString),
+          ep_attr2: replaceSQLString(this.sqlString2),
           createdby: creater,
           createdon: createTime
         });

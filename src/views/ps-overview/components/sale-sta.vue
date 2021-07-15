@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <sp-card title="本年销售统计" style="width: 32rem">
+    <sp-card title="本年销售统计" style="width: 40rem">
       <span slot="header">
         <el-switch class="switchBtn" v-model="switchBtn"></el-switch>
         <br />

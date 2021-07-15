@@ -174,6 +174,16 @@ export default {
     addNewPerson(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+            let index = this.tableData.findIndex(
+            (value) => value.education == this.pernsonTemp.education
+          );
+          if (index > -1) {
+            this.$message({
+              message: "该学历已存在，请勿重复添加",
+              type: "error",
+            });
+            return;
+          }
           this.tableData.push(this.pernsonTemp);
           this.personDialog = false;
         } else {

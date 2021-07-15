@@ -24,11 +24,9 @@
             <span style="margin-left: 10px">{{ scope.row.area }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="fabricqty" label="面料(万米)" width="180">
+        <el-table-column prop="matname" label="物料类型" width="180">
         </el-table-column>
-        <el-table-column prop="productsqty" label="制品(万件)" width="180">
-        </el-table-column>
-        <el-table-column prop="clothingqty" label="服装(万件)" width="180">
+        <el-table-column prop="qty" label="数量(万米)" width="180">
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -75,21 +73,22 @@
             style="width: 11.25rem"
           ></el-input>
         </el-form-item>
-        <el-form-item label="面料(万米)" label-width="120" prop="fabricqty">
-          <el-input-number
-            v-model="monthSaleTemp.fabricqty"
-            style="width: 11.25rem"
-          ></el-input-number>
+        <el-form-item label="物料类型" label-width="120" prop="matname">
+          <el-select
+            v-model="monthSaleTemp.matname"
+            placeholder="请选择物料类型"
+          >
+            <el-option
+              v-for="(item, index) in mattype"
+              :key="index"
+              :label="item.txt"
+              :value="item.txt"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="制品(万米)" label-width="120" prop="productsqty">
+        <el-form-item label="数量(万米)" label-width="120" prop="qty">
           <el-input-number
-            v-model="monthSaleTemp.productsqty"
-            style="width: 11.25rem"
-          ></el-input-number>
-        </el-form-item>
-        <el-form-item label="服装(万米)" label-width="120" prop="clothingqty">
-          <el-input-number
-            v-model="monthSaleTemp.clothingqty"
+            v-model="monthSaleTemp.qty"
             style="width: 11.25rem"
           ></el-input-number>
         </el-form-item>
@@ -117,7 +116,7 @@ export default {
   inject: ["reload"],
   name: "MonthSale",
   components: {
-    SpCard
+    SpCard,
   },
   data() {
     const validateNumber = (rule, value, callback) => {
@@ -130,59 +129,68 @@ export default {
     return {
       tableData: [],
       switchBtn: {
-        curmonthsales: false
+        curmonthsales: false,
       },
       sqlString: "",
       monthSaleDialog: false,
       monthSaleTemp: {
         area: "",
-        fabricqty: 0,
-        productsqty: 0,
-        clothingqty: 0
+        matname: "坯布",
+        qty: 0,
       },
       dialogStatus: "",
       textMap: {
         update: "编辑",
-        create: "新增"
+        create: "新增",
       },
       rules: {
         area: [
           { required: true, message: "请输入地区名称" },
-          { min: 2, max: 10, message: "长度在 2 到 10 个字符" }
+          { min: 2, max: 10, message: "长度在 2 到 10 个字符" },
         ],
-        fabricqty: [
+        matname: [{ required: true, message: "不能为空" }],
+        qty: [
           { required: true, message: "不能为空" },
           { type: "number", message: "必须为数字值" },
-          { validator: validateNumber, trigger: "blur" }
+          { validator: validateNumber, trigger: "blur" },
         ],
-        productsqty: [
-          { required: true, message: "不能为空" },
-          { type: "number", message: "必须为数字值" },
-          { validator: validateNumber, trigger: "blur" }
-        ],
-        clothingqty: [
-          { required: true, message: "不能为空" },
-          { type: "number", message: "必须为数字值" },
-          { validator: validateNumber, trigger: "blur" }
-        ]
-      }
+      },
+      mattype: [],
     };
   },
   mounted() {
     this.switchBtn.curmonthsales = this.$store.state.getInfo.customizedData.curmonthsales;
     this.sqlString = this.$store.state.getInfo.sqlMess.curmonthsalessql;
-    this.$store.dispatch("indexConfig/GetCurMonthSalesData").then(res => {
-      this.tableData = res.data;
+    // this.mattype = this.$store.state.indexConfig.mattypes;
+    this.$store.dispatch("indexConfig/GetMatType").then((res) => {
+      this.mattype = res.data;
+      this.$store.dispatch("indexConfig/GetCurMonthSalesData").then((res) => {
+        this.tableData = res.data.map((item) => {
+          for (let index = 0; index < this.mattype.length; index++) {
+            const element = this.mattype[index];
+            item.matname = "";
+            if (element.sht == item.mattype) {
+              item.matname = element.txt;
+              return item;
+            }
+            if (
+              index == this.mattype.length - 1 &&
+              element.sht != item.mattype
+            ) {
+              return item;
+            }
+          }
+        });
+      });
     });
   },
   methods: {
     resetTemp() {
       this.monthSaleTemp = {
         area: "",
-        fabricqty: 0,
-        productsqty: 0,
-        clothingqty: 0,
-        index: -1
+        matname: "坯布",
+        qty: 0,
+        index: -1,
       };
     },
     addNewMonthSaleDialog() {
@@ -201,7 +209,7 @@ export default {
       this.tableData.splice(index, 1);
     },
     monthSaleEdit(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate((valid) => {
         if (valid) {
           // this.tableData[this.monthSaleTemp.index] = this.monthSaleTemp;
           this.tableData[
@@ -209,13 +217,8 @@ export default {
           ].area = this.monthSaleTemp.area;
           this.tableData[
             this.monthSaleTemp.index
-          ].fabricqty = this.monthSaleTemp.fabricqty;
-          this.tableData[
-            this.monthSaleTemp.index
-          ].productsqty = this.monthSaleTemp.productsqty;
-          this.tableData[
-            this.monthSaleTemp.index
-          ].clothingqty = this.monthSaleTemp.clothingqty;
+          ].matname = this.monthSaleTemp.matname;
+          this.tableData[this.monthSaleTemp.index].qty = this.monthSaleTemp.qty;
 
           this.monthSaleDialog = false;
         } else {
@@ -224,14 +227,47 @@ export default {
       });
     },
     addNewMonthSale(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate((valid) => {
         if (valid) {
+          // let index = this.tableData.findIndex(
+          //   (value) => value.area == this.monthSaleTemp.area
+          // );
+          // let mattypeIndex = this.tableData.findIndex(
+          //   (value) => value.matname == this.monthSaleTemp.matname
+          // );
+          let index = this.tableData.filter((value) => {
+            return value.area == this.monthSaleTemp.area;
+          });
+
+          let mattypeIndex = index.filter((value) => {
+            return value.matname == this.monthSaleTemp.matname;
+          });
+          if (mattypeIndex.length > 0) {
+            this.$message({
+              message: "该地区已存在相同物料类型，请勿重复添加",
+              type: "error",
+            });
+            return;
+          }
+
           this.tableData.push(this.monthSaleTemp);
           this.monthSaleDialog = false;
         } else {
           return false;
         }
       });
+    },
+    // 将物料类型转换为对应的编号
+    changeMatTypes(matname) {
+      for (let index = 0; index < this.mattype.length; index++) {
+        const element = this.mattype[index];
+        if (element.txt == matname) {
+          return element.sht;
+        }
+        if (index == this.mattype.length - 1 && element.txt != matname) {
+          return "";
+        }
+      }
     },
     save() {
       let postObj = [];
@@ -246,12 +282,12 @@ export default {
             ep_homepagesettingid: "",
             ep_type: element.type,
             ep_attr1: "" + element.area,
-            ep_attr2: "" + element.fabricqty,
-            ep_attr3: "" + element.productsqty,
-            ep_attr4: "" + element.clothingqty,
+            ep_attr2: this.changeMatTypes(element.matname),
+            ep_attr3: "" + element.qty,
             createdby: creater,
-            createdon: createTime
+            createdon: createTime,
           };
+
           postObj.push(item);
         }
       } else {
@@ -259,10 +295,9 @@ export default {
           ep_sqlsettingid: "",
           ep_attr3: replaceSQLString(this.sqlString),
           createdby: creater,
-          createdon: createTime
+          createdon: createTime,
         });
       }
-
       this.$store
         .dispatch("setInfo/SaveTableMess", {
           data: postObj,
@@ -272,25 +307,25 @@ export default {
               : "ep_sqlsetting",
             type: "2",
             flg: this.switchBtn.curmonthsales ? "1" : "0",
-            sqlflg: "3"
-          }
+            sqlflg: "3",
+          },
         })
-        .then(res => {
+        .then((res) => {
           if (res.data > 0) {
             this.$message({
               message: "保存成功",
-              type: "success"
+              type: "success",
             });
             this.reload();
           } else {
             this.$message({
               message: "保存失败",
-              type: "error"
+              type: "error",
             });
           }
         });
-    }
-  }
+    },
+  },
 };
 </script>
 

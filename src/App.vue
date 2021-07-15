@@ -9,32 +9,35 @@ export default {
   name: "App",
   provide() {
     return {
-      reload: this.reload
+      reload: this.reload,
     };
   },
   data() {
     return {
-      isRouterAlive: true
+      isRouterAlive: true,
     };
+  },
+  beforeMount() {
+    this.$store.dispatch("getInfo/GetSqlSettingMess");
   },
   methods: {
     reload() {
       let basic_setting = this.$store.dispatch("getInfo/GetBasicSettingData");
       let sql_mess = this.$store.dispatch("getInfo/GetSqlSettingMess");
       Promise.all([basic_setting, sql_mess])
-        .then(res => {
+        .then((res) => {
           this.isRouterAlive = false;
-          this.$nextTick(function() {
+          this.$nextTick(function () {
             this.isRouterAlive = true;
           });
         })
-        .catch(err => {
+        .catch((err) => {
           this.$message({
             message: "获取基础数据失败，请刷新重试",
-            type: "error"
+            type: "error",
           });
           this.isRouterAlive = false;
-          this.$nextTick(function() {
+          this.$nextTick(function () {
             this.isRouterAlive = true;
           });
         });
@@ -57,8 +60,8 @@ export default {
       //       this.isRouterAlive = true;
       //     });
       //   });
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -18,18 +18,12 @@
           <el-button type="primary" size="mini" @click="save()">保存</el-button>
         </div>
       </span>
-      <el-table
-        v-if="switchBtn.curyearsales"
-        :data="tableData"
-        :default-sort="{ prop: 'curmonth', order: 'ascending' }"
-      >
+      <el-table v-if="switchBtn.curyearsales" :data="tableData">
         <el-table-column label="月份" prop="curmonth" width="100" sortable>
         </el-table-column>
-        <el-table-column prop="fabricqty" label="面料(万米)" width="180">
+        <el-table-column prop="matname" label="物料类型" width="180">
         </el-table-column>
-        <el-table-column prop="productsqty" label="制品(万件)" width="180">
-        </el-table-column>
-        <el-table-column prop="clothingqty" label="服装(万件)" width="180">
+        <el-table-column prop="qty" label="数量(万米)" width="180">
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -59,7 +53,7 @@
       </el-input>
     </sp-card>
 
-    <sp-card title="企业年度销售详情" style="margin-top:1rem">
+    <sp-card title="企业年度销售详情" style="margin-top: 1rem">
       <span slot="header">
         <el-switch
           class="switchBtn"
@@ -79,19 +73,12 @@
           >
         </div>
       </span>
-      <el-table
-        v-if="switchBtn.enteryearsales"
-        :data="tableData2"
-        style=""
-        :default-sort="{ prop: 'curyear', order: 'descending' }"
-      >
+      <el-table v-if="switchBtn.enteryearsales" :data="tableData2" style="">
         <el-table-column prop="curyear" label="年份" width="100">
         </el-table-column>
-        <el-table-column prop="fabricqty" label="面料(万米)" width="180">
+        <el-table-column prop="matname" label="物料类型" width="180">
         </el-table-column>
-        <el-table-column prop="productsqty" label="制品(万件)" width="180">
-        </el-table-column>
-        <el-table-column prop="clothingqty" label="服装(万件)" width="180">
+        <el-table-column prop="qty" label="数量(万米)" width="180">
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -143,21 +130,22 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="面料(万米)" label-width="120" prop="fabricqty">
-          <el-input-number
-            v-model="yearSaleTemp.fabricqty"
-            style="width: 11.25rem"
-          ></el-input-number>
+        <el-form-item label="物料类型" label-width="120" prop="matname">
+          <el-select
+            v-model="yearSaleTemp.matname"
+            placeholder="请选择物料类型"
+          >
+            <el-option
+              v-for="(item, index) in mattype"
+              :key="index"
+              :label="item.txt"
+              :value="item.txt"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="制品(万米)" label-width="120" prop="productsqty">
+        <el-form-item label="数量(万米)" label-width="120" prop="qty">
           <el-input-number
-            v-model="yearSaleTemp.productsqty"
-            style="width: 11.25rem"
-          ></el-input-number>
-        </el-form-item>
-        <el-form-item label="服装(万米)" label-width="120" prop="clothingqty">
-          <el-input-number
-            v-model="yearSaleTemp.clothingqty"
+            v-model="yearSaleTemp.qty"
             style="width: 11.25rem"
           ></el-input-number>
         </el-form-item>
@@ -187,26 +175,33 @@
         label-position="right"
       >
         <el-form-item label="年度" label-width="120" prop="curyear">
-          <el-input
+          <!-- <el-input
             v-model="enterpriseYearTemp.curyear"
             style="width: 11.25rem"
-          ></el-input>
+          ></el-input> -->
+          <el-date-picker
+            v-model="enterpriseYearTemp.curyear"
+            type="year"
+            placeholder="选择年"
+          >
+          </el-date-picker>
         </el-form-item>
-        <el-form-item label="面料(万米)" label-width="120" prop="fabricqty">
-          <el-input-number
-            v-model="enterpriseYearTemp.fabricqty"
-            style="width: 11.25rem"
-          ></el-input-number>
+        <el-form-item label="物料类型" label-width="120" prop="matname">
+          <el-select
+            v-model="enterpriseYearTemp.matname"
+            placeholder="请选择物料类型"
+          >
+            <el-option
+              v-for="(item, index) in mattype"
+              :key="index"
+              :label="item.txt"
+              :value="item.txt"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="制品(万米)" label-width="120" prop="productsqty">
+        <el-form-item label="数量(万米)" label-width="120" prop="qty">
           <el-input-number
-            v-model="enterpriseYearTemp.productsqty"
-            style="width: 11.25rem"
-          ></el-input-number>
-        </el-form-item>
-        <el-form-item label="服装(万米)" label-width="120" prop="clothingqty">
-          <el-input-number
-            v-model="enterpriseYearTemp.clothingqty"
+            v-model="enterpriseYearTemp.qty"
             style="width: 11.25rem"
           ></el-input-number>
         </el-form-item>
@@ -234,52 +229,52 @@ export default {
   inject: ["reload"],
   name: "YearSale",
   components: {
-    SpCard
+    SpCard,
   },
-  watch: {
-    tableData: {
-      handler(val) {
-        for (let index = 0; index < val.length; index++) {
-          const element = val[index];
-          this.tableDataMonthTemp[element.curmonth - 1].disable = true;
-        }
-        if (val.length != 0) {
-          let curyear = this.moment().format("YYYY");
-          let index = this.tableData2.findIndex(
-            item => item.curyear == curyear
-          );
-          if (index >= 0) {
-            this.tableData2[index].fabricqty = 0;
-            this.tableData2[index].productsqty = 0;
-            this.tableData2[index].clothingqty = 0;
-            for (let i = 0; i < val.length; i++) {
-              const element = val[i];
-              this.tableData2[index].fabricqty += +val[i].fabricqty;
-              this.tableData2[index].productsqty += +val[i].productsqty;
-              this.tableData2[index].clothingqty += +val[i].clothingqty;
-            }
-          } else {
-            let curyearItem = {
-              curyear: curyear,
-              fabricqty: 0,
-              productsqty: 0,
-              clothingqty: 0
-            };
-            for (let i = 0; i < val.length; i++) {
-              const element = val[i];
-              curyearItem.fabricqty += +val[i].fabricqty;
-              curyearItem.productsqty += +val[i].productsqty;
-              curyearItem.clothingqty += +val[i].clothingqty;
-            }
-            this.tableData2.unshift(curyearItem);
-          }
-        } else {
-          return;
-        }
-      },
-      deep: true
-    }
-  },
+  // watch: {
+  //   tableData: {
+  //     handler(val) {
+  //       // for (let index = 0; index < val.length; index++) {
+  //       //   const element = val[index];
+  //       //   this.tableDataMonthTemp[element.curmonth - 1].disable = true;
+  //       // }
+  //       if (val.length > 0) {
+  //         let curyear = this.moment().format("YYYY");
+  //         let matSet = new Set();
+
+  //         for (let index = 0; index < this.tableData.length; index++) {
+  //           const element = this.tableData[index];
+  //           matSet.add(element.matname);
+  //         }
+  //         console.log(matSet);
+  //         matSet.forEach((value, key) => {
+  //           console.log(value, key);
+  //           let count = 0;
+  //           for (let index = 0; index < this.tableData.length; index++) {
+  //             const element = this.tableData[index];
+  //             if (element.matname == value) {
+  //               count += element.qty;
+  //             }
+  //           }
+
+  //           let matIndex = this.tableData2.findIndex(
+  //             (item) => item.curyear == curyear && item.matname == value
+  //           );
+  //           if (matIndex > -1) {
+  //             this.tableData2[matIndex].qty = count;
+  //           } else {
+  //             this.tableData2.push({
+  //               curyear,
+  //               matname: value,
+  //               qty: count,
+  //             });
+  //           }
+  //         });
+  //       }
+  //     },
+  //     deep: true,
+  //   },
+  // },
   data() {
     const validateNumber = (rule, value, callback) => {
       if (value < 0) {
@@ -293,115 +288,96 @@ export default {
       tableData2: [],
       switchBtn: {
         curyearsales: false,
-        enteryearsales: false
+        enteryearsales: false,
       },
       sqlString: "",
       sqlString2: "",
       yearSaleDialog: false,
       yearSaleTemp: {
         curmonth: 1,
-        fabricqty: 0,
-        productsqty: 0,
-        clothingqty: 0
+        matname: "坯布",
+        qty: 0,
       },
       tableDataMonthTemp: [
         {
           curmonth: 1,
-          disable: false
+          disable: false,
         },
         {
           curmonth: 2,
-          disable: false
+          disable: false,
         },
         {
           curmonth: 3,
-          disable: false
+          disable: false,
         },
         {
           curmonth: 4,
-          disable: false
+          disable: false,
         },
         {
           curmonth: 5,
-          disable: false
+          disable: false,
         },
         {
           curmonth: 6,
-          disable: false
+          disable: false,
         },
         {
           curmonth: 7,
-          disable: false
+          disable: false,
         },
         {
           curmonth: 8,
-          disable: false
+          disable: false,
         },
         {
           curmonth: 9,
-          disable: false
+          disable: false,
         },
         {
           curmonth: 10,
-          disable: false
+          disable: false,
         },
         {
           curmonth: 11,
-          disable: false
+          disable: false,
         },
         {
           curmonth: 12,
-          disable: false
-        }
+          disable: false,
+        },
       ],
       dialogStatus: "",
       textMap: {
         update: "编辑",
-        create: "新增"
+        create: "新增",
       },
       rules: {
         curmonth: [{ required: true, message: "请输入月份" }],
-        fabricqty: [
+        matname: [{ required: true, message: "不能为空" }],
+        qty: [
           { required: true, message: "不能为空" },
           { type: "number", message: "必须为数字值" },
-          { validator: validateNumber, trigger: "blur" }
+          { validator: validateNumber, trigger: "blur" },
         ],
-        productsqty: [
-          { required: true, message: "不能为空" },
-          { type: "number", message: "必须为数字值" },
-          { validator: validateNumber, trigger: "blur" }
-        ],
-        clothingqty: [
-          { required: true, message: "不能为空" },
-          { type: "number", message: "必须为数字值" },
-          { validator: validateNumber, trigger: "blur" }
-        ]
       },
       enterpriseYearDialog: false,
       enterpriseYearTemp: {
-        curyear: 2021,
-        fabricqty: 0,
-        productsqty: 0,
-        clothingqty: 0
+        curyear: "2021",
+        matname: "",
+        qty: 0,
       },
       enterpriseYearRules: {
         curyear: [{ required: true, message: "请输入年份" }],
-        fabricqty: [
+        matname: [{ required: true, message: "不能为空" }],
+        qty: [
           { required: true, message: "不能为空" },
           { type: "number", message: "必须为数字值" },
-          { validator: validateNumber, trigger: "blur" }
+          { validator: validateNumber, trigger: "blur" },
         ],
-        productsqty: [
-          { required: true, message: "不能为空" },
-          { type: "number", message: "必须为数字值" },
-          { validator: validateNumber, trigger: "blur" }
-        ],
-        clothingqty: [
-          { required: true, message: "不能为空" },
-          { type: "number", message: "必须为数字值" },
-          { validator: validateNumber, trigger: "blur" }
-        ]
-      }
+      },
+      mattype: [],
     };
   },
   mounted() {
@@ -409,18 +385,58 @@ export default {
     this.switchBtn.enteryearsales = this.$store.state.getInfo.customizedData.salesyearly;
     this.sqlString = this.$store.state.getInfo.sqlMess.curyearsalessql;
     this.sqlString2 = this.$store.state.getInfo.sqlMess.salesyearlysql;
-
-    this.$store.dispatch("indexConfig/GetSalesYearlyData").then(res => {
-      this.tableData = res.data;
+    // this.mattype = this.$store.state.indexConfig.mattypes;
+    this.$store.dispatch("indexConfig/GetMatType").then((res) => {
+      this.mattype = res.data;
+      this.$store.dispatch("indexConfig/GetCurYearSalesData").then((res) => {
+        this.tableData = res.data.map((item) => {
+          for (let index = 0; index < this.mattype.length; index++) {
+            const element = this.mattype[index];
+            item.matname = "";
+            if (element.sht == item.mattype) {
+              item.matname = element.txt;
+              return item;
+            }
+            if (
+              index == this.mattype.length - 1 &&
+              element.sht != item.mattype
+            ) {
+              return item;
+            }
+          }
+        });
+      });
+      this.$store.dispatch("indexConfig/GetSalesYearlyData").then((res) => {
+        this.tableData2 = res.data.map((item) => {
+          for (let index = 0; index < this.mattype.length; index++) {
+            const element = this.mattype[index];
+            item.matname = "";
+            if (element.sht == item.mattype) {
+              item.matname = element.txt;
+              return item;
+            }
+            if (
+              index == this.mattype.length - 1 &&
+              element.sht != item.mattype
+            ) {
+              return item;
+            }
+          }
+        });
+      });
     });
   },
   methods: {
     resetTemp() {
-      this.monthSaleTemp = {
-        curmonth: "",
-        fabricqty: 0,
-        productsqty: 0,
-        clothingqty: 0
+      this.yearSaleTemp = {
+        curmonth: "1",
+        matname: "坯布",
+        qty: 0,
+      };
+      this.enterpriseYearTemp = {
+        curyear: "2021",
+        matname: "坯布",
+        qty: 0,
       };
     },
     addNewYearSaleDialog() {
@@ -439,20 +455,15 @@ export default {
       this.tableData.splice(index, 1);
     },
     yearSaleEdit(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate((valid) => {
         if (valid) {
           this.tableData[
             this.yearSaleTemp.index
           ].curmonth = this.yearSaleTemp.curmonth;
           this.tableData[
             this.yearSaleTemp.index
-          ].fabricqty = this.yearSaleTemp.fabricqty;
-          this.tableData[
-            this.yearSaleTemp.index
-          ].productsqty = this.yearSaleTemp.productsqty;
-          this.tableData[
-            this.yearSaleTemp.index
-          ].clothingqty = this.yearSaleTemp.clothingqty;
+          ].matname = this.yearSaleTemp.matname;
+          this.tableData[this.yearSaleTemp.index].qty = this.yearSaleTemp.qty;
 
           this.yearSaleDialog = false;
         } else {
@@ -461,14 +472,41 @@ export default {
       });
     },
     addNewYearSale(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate((valid) => {
         if (valid) {
+          let monthIndex = this.tableData.filter((value) => {
+            return value.curmonth == this.yearSaleTemp.curmonth;
+          });
+
+          let matIndex = monthIndex.filter((value) => {
+            return value.matname == this.yearSaleTemp.matname;
+          });
+
+          if (matIndex.length > 0) {
+            this.$message({
+              message: "该月份已存在相同物料类型，请勿重复添加",
+              type: "error",
+            });
+            return;
+          }
           this.tableData.push(this.yearSaleTemp);
           this.yearSaleDialog = false;
         } else {
           return false;
         }
       });
+    },
+    // 将物料类型转换为对应的编号
+    changeMatTypes(matname) {
+      for (let index = 0; index < this.mattype.length; index++) {
+        const element = this.mattype[index];
+        if (element.txt == matname) {
+          return element.sht;
+        }
+        if (index == this.mattype.length - 1 && element.txt != matname) {
+          return "";
+        }
+      }
     },
     save() {
       let postObj = [];
@@ -483,11 +521,10 @@ export default {
             ep_homepagesettingid: "",
             ep_type: element.type,
             ep_attr1: "" + element.curmonth,
-            ep_attr2: "" + element.fabricqty,
-            ep_attr3: "" + element.productsqty,
-            ep_attr4: "" + element.clothingqty,
+            ep_attr2: this.changeMatTypes(element.matname),
+            ep_attr3: "" + element.qty,
             createdby: creater,
-            createdon: createTime
+            createdon: createTime,
           };
           postObj.push(item);
         }
@@ -496,7 +533,7 @@ export default {
           ep_sqlsettingid: "",
           ep_attr4: replaceSQLString(this.sqlString),
           createdby: creater,
-          createdon: createTime
+          createdon: createTime,
         });
       }
 
@@ -509,20 +546,20 @@ export default {
               : "ep_sqlsetting",
             type: "3",
             flg: this.switchBtn.curyearsales ? "1" : "0",
-            sqlflg: "4"
-          }
+            sqlflg: "4",
+          },
         })
-        .then(res => {
+        .then((res) => {
           if (res.data > 0) {
             this.$message({
               message: "保存成功",
-              type: "success"
+              type: "success",
             });
             this.reload();
           } else {
             this.$message({
               message: "保存失败",
-              type: "error"
+              type: "error",
             });
           }
         });
@@ -540,19 +577,13 @@ export default {
       this.enterpriseYearTemp.index = index;
     },
     enterpriseYearEdit(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate((valid) => {
         if (valid) {
-          let index = this.tableData4.findIndex(
-            value => value.curyear == this.enterpriseYearTemp.curyear
-          );
+          let index = this.enterpriseYearTemp.index;
+
           this.tableData2[index].curyear = this.enterpriseYearTemp.curyear;
-          this.tableData2[index].fabricqty = this.enterpriseYearTemp.fabricqty;
-          this.tableData2[
-            index
-          ].productsqty = this.enterpriseYearTemp.productsqty;
-          this.tableData2[
-            index
-          ].clothingqty = this.enterpriseYearTemp.clothingqty;
+          this.tableData2[index].matname = this.enterpriseYearTemp.matname;
+          this.tableData2[index].qty = this.enterpriseYearTemp.qty;
 
           this.enterpriseYearDialog = false;
         } else {
@@ -561,11 +592,37 @@ export default {
       });
     },
     handleEnterpriseYearDelete(index, row) {
+      console.log(index, row, this.tableData2);
       this.tableData2.splice(index, 1);
     },
     addNewEnterpriseYear(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate((valid) => {
         if (valid) {
+          // let index = this.tableData2.findIndex(
+          //   (value) => value.curyear == this.enterpriseYearTemp.curyear
+          // );
+          // let mattypeIndex = this.tableData2.findIndex(
+          //   (value) => value.matname == this.enterpriseYearTemp.matname
+          // );
+          this.enterpriseYearTemp.curyear = this.moment(
+            this.enterpriseYearTemp.curyear
+          ).format("YYYY");
+          let yearIndex = this.tableData2.filter((value) => {
+            return value.curyear == this.enterpriseYearTemp.curyear;
+          });
+
+          let mattypeIndex = yearIndex.filter((value) => {
+            return value.matname == this.enterpriseYearTemp.matname;
+          });
+
+          if (mattypeIndex.length > 0) {
+            this.$message({
+              message: "该年份已存在相同物料类型，请勿重复添加",
+              type: "error",
+            });
+            return;
+          }
+
           this.tableData2.push(this.enterpriseYearTemp);
           this.enterpriseYearDialog = false;
         } else {
@@ -586,11 +643,10 @@ export default {
             ep_homepagesettingid: "",
             ep_type: element.type,
             ep_attr1: "" + element.curyear,
-            ep_attr2: "" + element.fabricqty,
-            ep_attr3: "" + element.productsqty,
-            ep_attr4: "" + element.clothingqty,
+            ep_attr2: this.changeMatTypes(element.matname),
+            ep_attr3: "" + element.qty,
             createdby: creater,
-            createdon: createTime
+            createdon: createTime,
           };
           postObj.push(item);
         }
@@ -599,10 +655,9 @@ export default {
           ep_sqlsettingid: "",
           ep_attr2: replaceSQLString(this.sqlString2),
           createdby: creater,
-          createdon: createTime
+          createdon: createTime,
         });
       }
-
       this.$store
         .dispatch("setInfo/SaveTableMess", {
           data: postObj,
@@ -612,25 +667,25 @@ export default {
               : "ep_sqlsetting",
             type: "4",
             flg: this.switchBtn.enteryearsales ? "1" : "0",
-            sqlflg: "2"
-          }
+            sqlflg: "2",
+          },
         })
-        .then(res => {
+        .then((res) => {
           if (res.data > 0) {
             this.$message({
               message: "保存成功",
-              type: "success"
+              type: "success",
             });
             this.reload();
           } else {
             this.$message({
               message: "保存失败",
-              type: "error"
+              type: "error",
             });
           }
         });
-    }
-  }
+    },
+  },
 };
 </script>
 

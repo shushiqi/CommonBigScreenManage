@@ -26,7 +26,7 @@
         </el-table-column>
         <el-table-column prop="elecqty" label="电（度）" width="120">
         </el-table-column>
-        <el-table-column prop="steamqty" label="蒸汽（千克）" width="120">
+        <el-table-column prop="steamqty" label="蒸汽（吨）" width="120">
         </el-table-column>
         <el-table-column>
           <template slot-scope="scope">

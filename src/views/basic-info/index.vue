@@ -2,83 +2,76 @@
   <div class="dash-container">
     <div class="configuration">
       <el-form ref="configForm" :model="form" label-width="auto" :rules="rules">
-        <el-row>
-          <div class="configuration-item">
-            <div class="configuration-item-title">数据源配置</div>
-            <!-- <el-col :span="6">
-              <el-form-item prop="customizeData" label="是否启用自定义数据">
+        <!-- <el-row> -->
+        <div class="configuration-item">
+          <div class="configuration-item-title">数据源配置</div>
+          <!--<el-form-item prop="customizeData" label="是否启用自定义数据">
                 <el-switch
                   v-model="form.customizeData"
-                ></el-switch> </el-form-item
-            ></el-col> -->
-            <el-col :span="9"
-              ><el-form-item prop="isusecollectdata" label="是否有采集数据">
-                <el-switch
-                  v-model="form.isusecollectdata"
-                ></el-switch> </el-form-item
-            ></el-col>
-            <el-col :span="15">
-              <el-form-item prop="domain" label="域名">
-                <el-input v-model="form.domain"></el-input> </el-form-item
-            ></el-col>
-            <el-col :span="9"
-              ><el-form-item prop="longitude" label="经度">
-                <el-input-number
-                  style="width: 10rem"
-                  controls-position="right"
-                  v-model.number="form.longitude"
-                ></el-input-number> </el-form-item
-            ></el-col>
-            <el-col :span="9">
-              <el-form-item prop="latitude" label="纬度">
-              <el-input-number
-                  style="width: 10rem"
-                  controls-position="right"
-                  v-model.number="form.latitude"
-                ></el-input-number> </el-form-item
-            ></el-col>
-            <el-col :span="6">
-              <el-form-item prop="maptype" label="是否采用中国地图">
-                <el-switch v-model="form.maptype"></el-switch> </el-form-item
-            ></el-col>
-          </div>
-          <div class="configuration-item">
-            <div class="configuration-item-title">标题配置</div>
-            <el-col :span="9">
-              <el-form-item label="标题名称" prop="titleName">
-                <el-input
-                  style="width: 16rem"
-                  v-model="form.titleName"
-                ></el-input> </el-form-item
-            ></el-col>
-            <el-col :span="15">
-              <el-form-item label="标题字号" prop="titleSize">
-                <el-input
-                  style="width: 6rem"
-                  v-model="form.titleSize"
-                ></el-input> </el-form-item
-            ></el-col>
-          </div>
-          <div class="configuration-item">
-            <div class="configuration-item-title">展示页面配置</div>
-            <el-col :span="12">
-              <el-form-item prop="refreshtime" label="数据刷新时间(秒)">
-                <el-input-number v-model="form.refreshtime"></el-input-number>
-                <!-- <el-input
+                ></el-switch> </el-form-item> -->
+          <el-form-item
+            class="configuration-item-content"
+            prop="isusecollectdata"
+            label="是否有采集数据"
+          >
+            <el-switch v-model="form.isusecollectdata"></el-switch>
+          </el-form-item>
+
+          <el-form-item class="configuration-item-content" prop="domain" label="域名">
+            <el-input v-model="form.domain"></el-input>
+          </el-form-item>
+          <el-form-item class="configuration-item-content" prop="longitude" label="经度">
+            <el-input-number
+              style="width: 10rem"
+              controls-position="right"
+              v-model.number="form.longitude"
+            ></el-input-number>
+          </el-form-item>
+
+          <el-form-item class="configuration-item-content" prop="latitude" label="纬度">
+            <el-input-number
+              style="width: 10rem"
+              controls-position="right"
+              v-model.number="form.latitude"
+            ></el-input-number>
+          </el-form-item>
+          <el-form-item class="configuration-item-content" prop="maptype" label="是否采用中国地图">
+            <el-switch v-model="form.maptype"></el-switch>
+          </el-form-item>
+        </div>
+        <div class="configuration-item">
+          <div class="configuration-item-title">标题配置</div>
+
+          <el-form-item class="configuration-item-content" label="企业名称" prop="enterprisename">
+            <el-input
+              style="width: 14rem"
+              v-model="form.enterprisename"
+            ></el-input>
+          </el-form-item>
+          <el-form-item class="configuration-item-content" label="标题名称" prop="titleName">
+            <el-input style="width: 14rem" v-model="form.titleName"></el-input>
+          </el-form-item>
+          <el-form-item class="configuration-item-content" label="标题字号" prop="titleSize">
+            <el-input style="width: 6rem" v-model="form.titleSize"></el-input>
+          </el-form-item>
+        </div>
+        <div class="configuration-item">
+          <div class="configuration-item-title">展示页面配置</div>
+
+          <el-form-item class="configuration-item-content" prop="refreshtime" label="数据刷新时间(秒)">
+            <el-input-number v-model="form.refreshtime"></el-input-number>
+            <!-- <el-input
                   v-model.number="form.refreshtime"
                 ></el-input> -->
-              </el-form-item></el-col
-            >
-            <el-col :span="12">
-              <el-form-item prop="refreshtime" label="实时曲线读取时间间隔(秒)">
-                <el-input-number v-model="form.carvereadtime"></el-input-number>
-                <!-- <el-input
+          </el-form-item>
+          <el-form-item class="configuration-item-content" prop="refreshtime" label="实时曲线读取时间间隔(秒)">
+            <el-input-number v-model="form.carvereadtime"></el-input-number>
+            <!-- <el-input
                   v-model.number="form.refreshtime"
                 ></el-input> -->
-              </el-form-item></el-col
-            >
-          </div>
-          <!-- <div class="configuration-item">
+          </el-form-item>
+        </div>
+        <!-- <div class="configuration-item">
             <div class="configuration-item-title">自定义数据配置</div>
             <sp-card class="card" title="首页">
               <el-col
@@ -124,7 +117,7 @@
               </el-col>
             </sp-card>
           </div> -->
-        </el-row>
+        <!-- </el-row> -->
 
         <el-form-item class="button">
           <el-button type="primary" @click="submit('configForm')"
@@ -219,6 +212,7 @@ export default {
         longitude: "",
         latitude: "",
         maptype: false,
+        enterprisename: "",
       },
       customizeDataForm1: [
         { label: "人员结构", value: "psnstruct", spanCol: 6 },
@@ -333,6 +327,7 @@ export default {
               ep_attr35: this.form.longitude,
               ep_attr36: this.form.latitude,
               ep_attr37: this.form.maptype ? "1" : "0",
+              ep_attr38: this.form.enterprisename,
               createdby: this.$store.state.user.userid,
               createdon: createTime,
             },
@@ -376,6 +371,9 @@ export default {
         : "";
       this.form.longitude = res.data[0].longitude ? res.data[0].longitude : "";
       this.form.latitude = res.data[0].latitude ? res.data[0].latitude : "";
+      this.form.enterprisename = res.data[0].enterprisename
+        ? res.data[0].enterprisename
+        : "";
     });
   },
 };
@@ -395,9 +393,16 @@ export default {
       &-item {
         width: 70%;
         margin-left: 0;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
         &-title {
+          width: 100%;
           font-size: 1.5rem;
-          margin-bottom: 0.25rem;
+          margin-bottom: 0.5rem;
+        }
+        &-content {
+          width: 50%;
         }
         .card {
           margin-bottom: 0.5rem;

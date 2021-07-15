@@ -247,7 +247,7 @@ export default {
     };
   },
   mounted() {
-    this.$store.dispatch("getInfo/GetSqlSettingMess").then(res => {
+    GetSqlSettingMess.then(res => {
       for (const key in this.form) {
         if (Object.hasOwnProperty.call(this.form, key)) {
           const element = this.form[key];

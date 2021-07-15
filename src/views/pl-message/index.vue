@@ -4,12 +4,12 @@
       <div class="content-item">
         <daily-energy-consume style="width: 60rem" class="margin"></daily-energy-consume>
         <el-divider></el-divider>
-        <daily-energy-sta style="width: 45rem" class="margin"></daily-energy-sta>
-        <greige-in-and-out style="width: 35rem" class="margin"></greige-in-and-out>
-        <fgood-in-and-out style="width: 35rem" class="margin"></fgood-in-and-out>
-        <workshop-product style="width: 37.5rem" class="margin"></workshop-product>
-        <mix-queue style="width: 47rem" class="margin"></mix-queue>
-        <delivery-queue style="width: 47rem" class="margin"></delivery-queue>
+        <daily-energy-sta style="width: 60rem" class="margin"></daily-energy-sta>
+        <greige-in-and-out style="width: 60rem" class="margin"></greige-in-and-out>
+        <fgood-in-and-out style="width: 60rem" class="margin"></fgood-in-and-out>
+        <workshop-product style="width:60rem" class="margin"></workshop-product>
+        <mix-queue style="width: 60rem" class="margin"></mix-queue>
+        <delivery-queue style="width: 60rem" class="margin"></delivery-queue>
       </div>
     </div>
   </div>

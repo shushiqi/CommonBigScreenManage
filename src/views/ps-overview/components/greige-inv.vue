@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <sp-card title="当前坯布库存品种" style="width: 26.25rem">
+    <sp-card title="当前坯布库存品种" style="width: 40rem">
       <span slot="header">
         <el-switch class="switchBtn" v-model="switchBtn"></el-switch>
         <br />

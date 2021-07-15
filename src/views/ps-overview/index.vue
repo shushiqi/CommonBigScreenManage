@@ -70,12 +70,12 @@ export default {
     OutputSta,
     GreigeCasting,
     SaleSta,
-    EnergyConsume
+    EnergyConsume,
   },
   data() {
     return {};
   },
-  mounted() {}
+  mounted() {},
 };
 </script>
 

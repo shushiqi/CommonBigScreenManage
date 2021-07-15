@@ -27,3 +27,8 @@ export function GetCurYearSalesData(data) {
 export function GetCurYearSalesInWorldData(data) {
   return request("get", "HWBigScreen/GetCurYearSalesInWorldData", data)
 }
+
+// 首页 获取物料类型
+export function GetMatType(data) {
+  return request("get", "HWBigScreen/GetMatType", data)
+}

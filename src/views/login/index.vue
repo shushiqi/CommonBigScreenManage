@@ -87,8 +87,8 @@ export default {
         password: "",
       },
       loginRules: {
-        username: [{ required: true, trigger: "blur" }],
-        password: [{ required: true, trigger: "blur" }],
+        username: [{ required: true, trigger: "blur", message: "请输入账号" }],
+        password: [{ required: true, trigger: "blur", message: "请输入密码" }],
       },
       loading: false,
       passwordType: "password",
@@ -116,34 +116,42 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
-        // if (valid) {
-        //   this.loading = true
-        //   this.$store.dispatch('user/login', this.loginForm).then(() => {
-        //     this.$router.push({ path: this.redirect || '/' })
-        //     this.loading = false
-        //   }).catch(() => {
-        //     this.loading = false
+        if (valid) {
+          this.$store
+            .dispatch("user/login", {
+              username: this.loginForm.username,
+              password: this.md5(
+                this.md5(this.loginForm.password) + "HFBigScreen"
+              ),
+            })
+            .then((res) => {
+              if (res.data == "-1000") {
+                this.$message.error("用户不存在，请重试");
+              } else if (res.data == "-1001") {
+                this.$message.error("密码错误，请重试");
+              } else if (res.data && res.data != "") {
+                this.$router.push("/basic-info");
+              }
+            });
+        } else {
+          return false;
+        }
+        // this.$store
+        //   .dispatch("user/login", {
+        //     username: this.loginForm.username,
+        //     password: this.md5(
+        //       this.md5(this.loginForm.password) + "HFBigScreen"
+        //     ),
         //   })
-        // } else {
-        //
-        //   return false
-        // }
-        this.$store
-          .dispatch("user/login", {
-            username: this.loginForm.username,
-            password: this.md5(
-              this.md5(this.loginForm.password) + "HFBigScreen"
-            ),
-          })
-          .then((res) => {
-            if (res.data == "-1000") {
-              this.$message.error("用户不存在，请重试");
-            } else if (res.data == "-1001") {
-              this.$message.error("密码错误，请重试");
-            } else if (res.data && res.data != "") {
-              this.$router.push("/basic-info");
-            }
-          });
+        //   .then((res) => {
+        //     if (res.data == "-1000") {
+        //       this.$message.error("用户不存在，请重试");
+        //     } else if (res.data == "-1001") {
+        //       this.$message.error("密码错误，请重试");
+        //     } else if (res.data && res.data != "") {
+        //       this.$router.push("/basic-info");
+        //     }
+        //   });
       });
     },
   },

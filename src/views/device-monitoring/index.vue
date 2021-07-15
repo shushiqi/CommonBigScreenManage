@@ -21,7 +21,7 @@
       ></device-status>
       <device-warn
         :id="optionValue"
-        style="width: 40rem"
+        style="width: 80rem"
         class="margin"
       ></device-warn>
 
@@ -29,17 +29,17 @@
       <div class="tables">
         <work-in-process
           :id="optionValue"
-          style="width: 27rem"
+          style="width: 80rem"
           class="margin"
         ></work-in-process>
         <device-list
           :id="optionValue"
-          style="width: 27rem"
+          style="width: 80rem"
           class="margin"
         ></device-list>
         <device-effect
           :id="optionValue"
-          style="width: 27rem"
+          style="width: 80rem"
           class="margin"
         ></device-effect>
       </div>
@@ -63,22 +63,23 @@ export default {
     DeviceWarn,
     WorkInProcess,
     DeviceList,
-    DeviceEffect
+    DeviceEffect,
   },
   data() {
     return {
       options: [
         {
           value: "",
-          label: ""
-        }
+          label: "",
+        },
       ],
       // 车间id
-      optionValue: ""
+      optionValue: "",
     };
   },
   mounted() {
-    this.$store.dispatch("deviceMonitoring/GetWorkShopList").then(res => {
+    this.$store.dispatch("deviceMonitoring/GetWorkShopList").then((res) => {
+      console.log(res)
       if (res.data.length > 0) {
         this.options = [];
         for (let index = 0; index < res.data.length; index++) {
@@ -95,8 +96,8 @@ export default {
   methods: {
     changeWorkshop(value) {
       this.optionValue = value;
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

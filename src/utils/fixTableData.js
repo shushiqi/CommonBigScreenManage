@@ -36,3 +36,5 @@ export function replaceSQLString(str) {
     .replace(/\\/g, "%5C")
     .replace(/\|/g, "%7C");
 }
+
+

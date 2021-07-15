@@ -34,6 +34,9 @@ export default {
     return {};
   },
   watch: {},
+  beforeMount(){
+    this.$store.dispatch("indexConfig/GetMatType")
+  },
   mounted() {},
 
   methods: {}

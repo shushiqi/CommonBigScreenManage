@@ -1,7 +1,13 @@
 import * as info from "@/api/indexConfig"
 
-const state = {}
-const mutations = {}
+const state = {
+  mattypes: []
+}
+const mutations = {
+  SET_MATTYPES(state, mattype) {
+    state.mattypes = mattype
+  },
+}
 
 const actions = {
   // 获取人员结构信息
@@ -58,6 +64,19 @@ const actions = {
   }, data = {}) {
     return new Promise((resolve, reject) => {
       info.GetCurYearSalesInWorldData(data).then(response => {
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  // 获取物料类型
+  GetMatType({
+    commit
+  }, data = {}) {
+    return new Promise((resolve, reject) => {
+      info.GetMatType(data).then(response => {
+        commit("SET_MATTYPES", response.data)
         resolve(response)
       }).catch(error => {
         reject(error)

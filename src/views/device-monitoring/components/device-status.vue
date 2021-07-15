@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <sp-card title="当日能耗统计">
+    <sp-card title="设备状态">
       <span slot="header">
         <el-switch class="switchBtn" v-model="switchBtn"></el-switch>
         <br />
@@ -58,6 +58,7 @@ export default {
   },
   watch: {
     id: function(newVal) {
+      
       this.$store
         .dispatch("deviceMonitoring/GetMcnStatusSummaryData", {
           workshopid: newVal

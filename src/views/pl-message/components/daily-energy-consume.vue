@@ -21,7 +21,10 @@
         <el-form-item label="当日用电(度)">
           <el-input v-model="tableData[0].dayelecqty"></el-input>
         </el-form-item>
-        <el-form-item label="当日用气(m³)">
+        <el-form-item label="当日用蒸汽(吨)">
+          <el-input v-model="tableData[0].steamqty"></el-input>
+        </el-form-item>
+        <el-form-item label="当日用天然气(m³)">
           <el-input v-model="tableData[0].daygasqty"></el-input>
         </el-form-item>
       </el-form>
@@ -45,7 +48,7 @@ export default {
   inject: ["reload"],
   name: "EnergyConsume",
   components: {
-    SpCard
+    SpCard,
   },
   data() {
     return {
@@ -53,17 +56,18 @@ export default {
         {
           daywaterqty: "",
           dayelecqty: "",
-          daygasqty: ""
-        }
+          steamqty: "",
+          daygasqty: "",
+        },
       ],
       switchBtn: false,
-      sqlString: ""
+      sqlString: "",
     };
   },
   mounted() {
     this.switchBtn = this.$store.state.getInfo.customizedData.dayenergyconsume;
     this.sqlString = this.$store.state.getInfo.sqlMess.dayenergyconsumesql;
-    this.$store.dispatch("plMessage/GetDayEnergyConsumeData").then(res => {
+    this.$store.dispatch("plMessage/GetDayEnergyConsumeData").then((res) => {
       this.tableData =
         res.data.length > 0
           ? res.data
@@ -71,8 +75,9 @@ export default {
               {
                 daywaterqty: "",
                 dayelecqty: "",
-                daygasqty: ""
-              }
+                steamqty: "",
+                daygasqty: "",
+              },
             ];
     });
   },
@@ -91,9 +96,10 @@ export default {
             ep_type: element.type,
             ep_attr1: "" + element.daywaterqty,
             ep_attr2: "" + element.dayelecqty,
-            ep_attr3: "" + element.daygasqty,
+            ep_attr3: "" + element.steamqty,
+            ep_attr4: "" + element.daygasqty,
             createdby: creater,
-            createdon: createTime
+            createdon: createTime,
           };
           postObj.push(item);
         }
@@ -102,7 +108,7 @@ export default {
           ep_sqlsettingid: "",
           ep_attr20: replaceSQLString(this.sqlString),
           createdby: creater,
-          createdon: createTime
+          createdon: createTime,
         });
       }
 
@@ -115,25 +121,25 @@ export default {
               : "ep_sqlsetting",
             type: "1",
             flg: this.switchBtn ? "1" : "0",
-            sqlflg: "20"
-          }
+            sqlflg: "20",
+          },
         })
-        .then(res => {
+        .then((res) => {
           if (res.data > 0) {
             this.$message({
               message: "保存成功",
-              type: "success"
+              type: "success",
             });
             this.reload();
           } else {
             this.$message({
               message: "保存失败",
-              type: "error"
+              type: "error",
             });
           }
         });
-    }
-  }
+    },
+  },
 };
 </script>
 
